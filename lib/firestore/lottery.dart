@@ -5,35 +5,20 @@ import 'dart:math' as math;
 
 class LotteryFireStore {
   static final _firestoreInstance = FirebaseFirestore.instance;
-  static final CollectionReference lotteries = _firestoreInstance.collection('lottery');
+  static final CollectionReference lotteries =
+      _firestoreInstance.collection('lottery');
 
-  static Future<dynamic> addLottery() async {
-    try{
+  static Future<dynamic> addLottery(Lottery newLottery) async {
+    try {
+      print('作成スタート');
       Firebase.initializeApp();
-      String newId = _randomString(8);
       var result = await lotteries.add({
-        'id': newId,
-        'createdTime' : Timestamp.now()
+        'id': newLottery.id,
+        'createdTime': newLottery.createdTime
       });
-      print('成功');
-
-    } on FirebaseException catch(e) {
+      print('成功 : $result');
+    } on FirebaseException catch (e) {
       print('投稿エラー：$e');
     }
-  }
-
-  static String _randomString(int length) {
-    String randomStr = "";
-
-    var random = math.Random();
-
-    for (var i = 0; i < length; i++) {
-      int alphaNum = 65 + random.nextInt(26);
-      int isLower = random.nextBool() ? 32 : 0;
-
-      randomStr += String.fromCharCode(alphaNum + isLower);
-    }
-
-    return randomStr;
   }
 }
