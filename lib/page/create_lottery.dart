@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../firestore/lottery.dart';
 
-class CreateLottery extends StatelessWidget {
-  const CreateLottery();
+class CreateLottery extends StatefulWidget {
+  const CreateLottery({Key? key}) : super(key: key);
 
+  @override
+  State<CreateLottery> createState() => _CreateLottery();
+}
+
+
+
+class _CreateLottery extends State<CreateLottery> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LotteryFireStore.getLottery();
+  }
   @override
   Widget build(BuildContext context) {
     int join_num = 0;

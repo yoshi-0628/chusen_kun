@@ -11,7 +11,7 @@ class LotteryFireStore {
     try {
       print('作成スタート');
       Firebase.initializeApp();
-      var result = await lotteries.add({
+      DocumentReference result = await lotteries.add({
         'id': newLottery.id,
         'createdTime': newLottery.createdTime
       });
@@ -19,6 +19,24 @@ class LotteryFireStore {
       return true;
     } on FirebaseException catch (e) {
       print('投稿エラー：$e');
+      return false;
+    }
+  }
+
+  static Future<dynamic> getLottery() async {
+    try {
+      DocumentSnapshot documentSnapshot = await lotteries.doc('h0tFeaew8fE011fiBVqm').get();
+      Map<String, dynamic> data = documentSnapshot.data() as Map<String,
+          dynamic>;
+      Lottery myLottery = Lottery(
+        id: data['id'],
+        createdTime: data['createdTime'],
+      );
+      print('取得id : $myLottery');
+      print(myLottery.id);
+      return true;
+    } on FirebaseException catch (e) {
+      print('取得エラー：$e');
       return false;
     }
   }
