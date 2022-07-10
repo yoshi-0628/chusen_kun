@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'page/create_lottery.dart';
+import 'page/join_lottery.dart';
+import 'firestore/lottery.dart';
 
 void main() {
   runApp(const MyApp());
@@ -6,7 +9,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: '抽選くん'),
     );
   }
 }
@@ -27,8 +30,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 1;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +48,14 @@ class _MyHomePageState extends State<MyHomePage> {
               style: ElevatedButton.styleFrom(
                 primary: Colors.grey
               ),
-              onPressed: () {
+              onPressed: () async {
                 // 遷移するときの処理を書く
                 print('抽選を作成する');
+                await LotteryFireStore.addLottery();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CreateLottery()),
+                );
               },
               child: const Text('抽選を作成する'),
             ),
@@ -59,6 +65,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               onPressed: () {
                 // 遷移するときの処理を書く
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => JoinLottery()),
+                );
                 print('抽選に参加する');
               },
               child: const Text('抽選に参加する'),
