@@ -11,7 +11,7 @@ class LotteryFireStore {
   static Future<dynamic> addLottery(Lottery newLottery) async {
     try {
       print('作成スタート');
-      Firebase.initializeApp();
+      await Firebase.initializeApp();
       DocumentReference result = await lotteries.add({
         'createdTime': newLottery.createdTime
       });
