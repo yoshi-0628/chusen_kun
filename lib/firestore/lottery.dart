@@ -1,6 +1,7 @@
 import 'package:chusen_kun/model/lottery.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
 class LotteryFireStore {
   static final _firestoreInstance = FirebaseFirestore.instance;
@@ -12,7 +13,6 @@ class LotteryFireStore {
       print('作成スタート');
       Firebase.initializeApp();
       DocumentReference result = await lotteries.add({
-        'id': newLottery.id,
         'createdTime': newLottery.createdTime
       });
       print('成功 : $result');
@@ -22,20 +22,34 @@ class LotteryFireStore {
     }
   }
 
-  static Future<dynamic> getLottery() async {
+  // 抽選を取得する
+  static Future<dynamic> getLottery(String uid) async {
     try {
-      DocumentSnapshot documentSnapshot = await lotteries.doc('h0tFeaew8fE011fiBVqm').get();
+      DocumentSnapshot documentSnapshot = await lotteries.doc(uid).get();
       Map<String, dynamic> data = documentSnapshot.data() as Map<String,
           dynamic>;
       Lottery myLottery = Lottery(
-        id: data['id'],
         createdTime: data['createdTime'],
       );
       print('取得id : $myLottery');
-      print(myLottery.id);
       return true;
     } on FirebaseException catch (e) {
       print('取得エラー：$e');
+      return false;
+    }
+  }
+
+  // 抽選を取得する
+  static Future<dynamic> editTitle(String uid,String title) async {
+    try {
+      print('更新スタート');
+      Firebase.initializeApp();
+      var result = await lotteries.doc(uid).update({
+        'title': title
+      });
+      return result;
+    } on FirebaseException catch (e) {
+      print('更新エラー：$e');
       return false;
     }
   }

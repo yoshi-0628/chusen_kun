@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Lottery {
-  String id;
+  String title;
   Timestamp? createdTime;
 
-  Lottery({this.id = '', this.createdTime});
+  Lottery({this.title = '', this.createdTime});
 }

@@ -1,21 +1,16 @@
+import 'package:chusen_kun/model/lottery.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../firestore/lottery.dart';
 
 class CreateLottery extends StatefulWidget {
   const CreateLottery({Key? key});
+
   @override
   State<CreateLottery> createState() => _CreateLottery();
 }
 
-
-
 class _CreateLottery extends State<CreateLottery> {
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   LotteryFireStore.getLottery();
-  // }
   @override
   Widget build(BuildContext context) {
     String uid = ModalRoute.of(context)?.settings.arguments as String;
@@ -35,8 +30,13 @@ class _CreateLottery extends State<CreateLottery> {
                   border: UnderlineInputBorder(),
                   labelText: 'タイトルを入力してください',
                 ),
-                onFieldSubmitted: (String value) {
+                onFieldSubmitted: (String value) async {
                   print('submit: $value');
+                  await LotteryFireStore.editTitle(uid, value);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('タイトルの変更完了しました。'),
+                    duration: const Duration(seconds: 5),
+                  ));
                 },
               ),
             ),

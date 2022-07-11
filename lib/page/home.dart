@@ -36,7 +36,6 @@ class _Home extends State<Home> {
               onPressed: () async {
                 print('抽選を作成する');
                 Lottery newLottery = Lottery(
-                  id: StringUtil.randomString(8),
                   createdTime: Timestamp.now(),
                 );
                 try {
