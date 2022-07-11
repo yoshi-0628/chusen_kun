@@ -15,6 +15,8 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  String argument = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,10 +39,11 @@ class _Home extends State<Home> {
                   id: StringUtil.randomString(8),
                   createdTime: Timestamp.now(),
                 );
-                var result = await LotteryFireStore.addLottery(newLottery);
-                if (result) {
-                  Navigator.pushNamed(context, '/create');
-                } else {
+                try {
+                  DocumentReference result =
+                      await LotteryFireStore.addLottery(newLottery);
+                  Navigator.pushNamed(context, '/create', arguments: result.id);
+                } catch (e) {
                   dialog(context);
                 }
               },
@@ -52,7 +55,10 @@ class _Home extends State<Home> {
               ),
               onPressed: () {
                 // 遷移するときの処理を書く
-                Navigator.pushNamed(context, '/join');
+                Navigator.pushNamed(
+                  context,
+                  '/join',
+                );
                 print('抽選に参加する');
               },
               child: const Text('抽選に参加する'),

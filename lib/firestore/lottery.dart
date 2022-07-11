@@ -16,10 +16,9 @@ class LotteryFireStore {
         'createdTime': newLottery.createdTime
       });
       print('成功 : $result');
-      return true;
+      return result;
     } on FirebaseException catch (e) {
-      print('投稿エラー：$e');
-      return false;
+      throw new Error();
     }
   }
 
