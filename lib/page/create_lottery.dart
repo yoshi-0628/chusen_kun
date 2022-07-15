@@ -30,7 +30,7 @@ class _CreateLottery extends State<CreateLottery> {
 
     _editLottery() async {
       if(!IntUtil.isNumeric(winnerController.text)) {
-        return dialog(context);
+        return dialog(context, 'エラーが発生しました。', '当選人数には数値を入力してください。');
       }
       Lottery editLottery = new Lottery(
         title: titleController.text,

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-Future<void> dialog(context) async {
+Future<void> dialog(context, String title, String message) async {
+
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('エラー'),
+        title: Text(title),
         content: SingleChildScrollView(
           child: ListBody(
-            children: const <Widget>[
-              Text('抽選の作成に失敗しました'),
+            children: <Widget>[
+              Text(message),
             ],
           ),
         ),

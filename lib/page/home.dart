@@ -42,7 +42,7 @@ class _Home extends State<Home> {
                       await LotteryFireStore.addLottery(newLottery);
                   Navigator.pushNamed(context, '/create', arguments: result.id);
                 } catch (e) {
-                  dialog(context);
+                  dialog(context,'エラーが発生しました', '抽選の作成に失敗しました。');
                 }
               },
               child: const Text('抽選を作成する'),
