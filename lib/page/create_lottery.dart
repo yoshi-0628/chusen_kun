@@ -1,3 +1,4 @@
+import 'package:chusen_kun/const/button_name.dart';
 import 'package:chusen_kun/model/lottery.dart';
 import 'package:chusen_kun/util/int_util.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../firestore/lottery.dart';
 import '../theme/dialog.dart';
+import '../const/message.dart';
+import '../const/object_name.dart';
 
 class CreateLottery extends StatefulWidget {
   const CreateLottery({Key? key});
@@ -29,8 +32,8 @@ class _CreateLottery extends State<CreateLottery> {
     }
 
     _editLottery() async {
-      if(!IntUtil.isNumeric(winnerController.text)) {
-        return dialog(context, 'エラーが発生しました。', '当選人数には数値を入力してください。');
+      if (!IntUtil.isNumeric(winnerController.text) && winnerController.text != '') {
+        return dialog(context, Message.ERR_OCCURRRNCE, Message.NOT_NUM_WINNER);
       }
       Lottery editLottery = new Lottery(
         title: titleController.text,
@@ -39,7 +42,7 @@ class _CreateLottery extends State<CreateLottery> {
       await LotteryFireStore.editLottery(uid, editLottery);
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('変更完了しました'),
+        content: Text(Message.EDIT_SUCCESS),
         duration: const Duration(seconds: 5),
       ));
     }
@@ -71,7 +74,7 @@ class _CreateLottery extends State<CreateLottery> {
                     controller: titleController,
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
-                      labelText: 'タイトルを入力してください',
+                      labelText: ObjectName.LOTTERY_TITLE,
                     ),
                     onFieldSubmitted: (String value) async {
                       await _editLottery();
@@ -93,7 +96,8 @@ class _CreateLottery extends State<CreateLottery> {
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
-                        decoration: const InputDecoration(labelText: '当選人数'),
+                        decoration: const InputDecoration(
+                            labelText: ObjectName.WINNERS_NUM),
                       ),
                     ),
                   ),
@@ -112,7 +116,7 @@ class _CreateLottery extends State<CreateLottery> {
                     onPressed: () {
                       print(uid);
                     },
-                    child: const Text('抽選を開始する')),
+                    child: const Text(ButtonName.LOTTERY_START)),
                 Text('参加人数 $join_num'),
               ],
             ),

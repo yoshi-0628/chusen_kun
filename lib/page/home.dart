@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../firestore/lottery.dart';
 import '../model/lottery.dart';
 import '../theme/dialog.dart';
+import '../const/message.dart';
+import '../const/button_name.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -42,10 +44,10 @@ class _Home extends State<Home> {
                       await LotteryFireStore.addLottery(newLottery);
                   Navigator.pushNamed(context, '/create', arguments: result.id);
                 } catch (e) {
-                  dialog(context,'エラーが発生しました', '抽選の作成に失敗しました。');
+                  dialog(context,Message.ERR_OCCURRRNCE, Message.CREATE_LOTTERY_FAILED);
                 }
               },
-              child: const Text('抽選を作成する'),
+              child: const Text(ButtonName.LOTTERY_CREATE),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -59,7 +61,7 @@ class _Home extends State<Home> {
                 );
                 print('抽選に参加する');
               },
-              child: const Text('抽選に参加する'),
+              child: const Text(ButtonName.LOTTERY_JOIN),
             ),
           ],
         ),

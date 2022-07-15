@@ -5,8 +5,6 @@ class IntUtil {
     if(value == null) {
       return false;
     }
-    var test = int.tryParse(value) != null;
-    print('トライ $test');
     return int.tryParse(value) != null;
   }
 }
