@@ -1,8 +1,10 @@
 import 'package:chusen_kun/model/lottery.dart';
+import 'package:chusen_kun/util/int_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../firestore/lottery.dart';
+import '../theme/dialog.dart';
 
 class CreateLottery extends StatefulWidget {
   const CreateLottery({Key? key});
@@ -15,12 +17,10 @@ class _CreateLottery extends State<CreateLottery> {
   final titleController = TextEditingController();
   final winnerController = TextEditingController();
 
-
   @override
   Widget build(BuildContext context) {
     String uid = ModalRoute.of(context)?.settings.arguments as String;
     int join_num = 0;
-
     @override
     void dispose() {
       titleController.dispose();
@@ -28,8 +28,15 @@ class _CreateLottery extends State<CreateLottery> {
       super.dispose();
     }
 
-    _changeTitle() async {
-      await LotteryFireStore.editTitle(uid, titleController.text);
+    _editLottery() async {
+      if(!IntUtil.isNumeric(winnerController.text)) {
+        return dialog(context);
+      }
+      Lottery editLottery = new Lottery(
+        title: titleController.text,
+        winnersNum: winnerController.text,
+      );
+      await LotteryFireStore.editLottery(uid, editLottery);
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('変更完了しました'),
@@ -49,7 +56,7 @@ class _CreateLottery extends State<CreateLottery> {
             if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
               print(currentScope.focusedChild);
               currentScope.unfocus();
-              await _changeTitle();
+              await _editLottery();
             }
           },
           child: Center(
@@ -67,7 +74,7 @@ class _CreateLottery extends State<CreateLottery> {
                       labelText: 'タイトルを入力してください',
                     ),
                     onFieldSubmitted: (String value) async {
-                      _changeTitle();
+                      await _editLottery();
                     },
                   ),
                 ),

@@ -40,12 +40,15 @@ class LotteryFireStore {
   }
 
   // 抽選を取得する
-  static Future<dynamic> editTitle(String uid,String title) async {
+  static Future<dynamic> editLottery(String uid,Lottery editLottery) async {
     try {
       print('更新スタート');
       Firebase.initializeApp();
       var result = await lotteries.doc(uid).update({
-        'title': title
+        // タイトル
+        'title': editLottery.title,
+        // 当選人数
+        'winners_num': editLottery.winnersNum,
       });
       return result;
     } on FirebaseException catch (e) {
