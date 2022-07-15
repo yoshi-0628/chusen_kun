@@ -24,6 +24,7 @@ class _CreateLottery extends State<CreateLottery> {
     @override
     void dispose() {
       titleController.dispose();
+      winnerController.dispose();
       super.dispose();
     }
 
