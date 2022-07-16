@@ -49,12 +49,14 @@ class _Home extends State<Home> {
               },
               child: const Text(ButtonName.LOTTERY_CREATE),
             ),
+            // TODO
+            // 2度押し制御
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Colors.orange,
               ),
               onPressed: () {
-                // 遷移するときの処理を書く
+                // 遷移するときの処理を書く　
                 Navigator.pushNamed(
                   context,
                   '/join',

@@ -1,3 +1,4 @@
+import 'package:chusen_kun/page/join_success.dart';
 import 'package:flutter/material.dart';
 import 'page/create_lottery.dart';
 import 'page/join_lottery.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => Home(title: '抽選くん'),
         '/create': (context) => CreateLottery(),
         '/join': (context) => JoinLottery(),
+        '/joinSuccess': (context) => JoinSuccess(),
       },
     );
   }

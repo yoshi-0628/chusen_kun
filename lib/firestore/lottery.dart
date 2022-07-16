@@ -1,7 +1,9 @@
+import 'package:chusen_kun/model/join.dart';
 import 'package:chusen_kun/model/lottery.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LotteryFireStore {
   static final _firestoreInstance = FirebaseFirestore.instance;
@@ -12,9 +14,8 @@ class LotteryFireStore {
     try {
       print('作成スタート');
       await Firebase.initializeApp();
-      DocumentReference result = await lotteries.add({
-        'createdTime': newLottery.createdTime
-      });
+      DocumentReference result =
+          await lotteries.add({'createdTime': newLottery.createdTime});
       print('成功 : $result');
       return result;
     } on FirebaseException catch (e) {
@@ -26,12 +27,11 @@ class LotteryFireStore {
   static Future<dynamic> getLottery(String uid) async {
     try {
       DocumentSnapshot documentSnapshot = await lotteries.doc(uid).get();
-      Map<String, dynamic> data = documentSnapshot.data() as Map<String,
-          dynamic>;
+      Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
       Lottery myLottery = Lottery(
         createdTime: data['createdTime'],
       );
-      print('取得id : $myLottery');
       return true;
     } on FirebaseException catch (e) {
       print('取得エラー：$e');
@@ -39,8 +39,8 @@ class LotteryFireStore {
     }
   }
 
-  // 抽選を取得する
-  static Future<dynamic> editLottery(String uid,Lottery editLottery) async {
+  // タイトルと当選人数を変更する
+  static Future<dynamic> editLottery(String uid, Lottery editLottery) async {
     try {
       print('更新スタート');
       Firebase.initializeApp();
@@ -54,6 +54,29 @@ class LotteryFireStore {
     } on FirebaseException catch (e) {
       print('更新エラー：$e');
       return false;
+    }
+  }
+
+  // 抽選に参加する
+  static Future<void> joinLottery(
+    String uid,
+  ) async {
+    try {
+      print('抽選に参加する');
+      Firebase.initializeApp();
+
+      final messaging = FirebaseMessaging.instance;
+      final String? _token = await messaging.getToken();
+
+      // TODO
+      // 既に登録されている場合、ダイアログを出す
+      Join newJoin = new Join(token: _token!, createdTime: Timestamp.now());
+      await lotteries.doc(uid).collection('join').add({
+        'token': newJoin.token,
+        'createdTime': newJoin.createdTime,
+      });
+    } on FirebaseException catch (e) {
+      throw new Error();
     }
   }
 }
