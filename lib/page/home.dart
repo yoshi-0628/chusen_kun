@@ -17,6 +17,8 @@ class Home extends StatefulWidget {
 
 class _Home extends State<Home> {
   String argument = '';
+  bool _isJoinDisabled = false;
+  bool _isCreateDisabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,10 @@ class _Home extends State<Home> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(primary: Colors.grey),
-              onPressed: () async {
+              onPressed: _isCreateDisabled
+                  ? null
+                  : () async {
+                setState(() => _isCreateDisabled = true); //ボタンを無効
                 print('抽選を作成する');
                 Lottery newLottery = Lottery(
                   createdTime: Timestamp.now(),
@@ -44,8 +49,11 @@ class _Home extends State<Home> {
                       await LotteryFireStore.addLottery(newLottery);
                   Navigator.pushNamed(context, '/create', arguments: result.id);
                 } catch (e) {
-                  dialog(context,Message.ERR_OCCURRRNCE, Message.CREATE_LOTTERY_FAILED);
+                  dialog(context, Message.ERR_OCCURRRNCE,
+                      Message.CREATE_LOTTERY_FAILED);
                 }
+                setState(() => _isCreateDisabled = false); //ボタンを有効
+
               },
               child: const Text(ButtonName.LOTTERY_CREATE),
             ),
@@ -55,14 +63,16 @@ class _Home extends State<Home> {
               style: ElevatedButton.styleFrom(
                 primary: Colors.orange,
               ),
-              onPressed: () {
-                // 遷移するときの処理を書く　
-                Navigator.pushNamed(
-                  context,
-                  '/join',
-                );
-                print('抽選に参加する');
-              },
+              onPressed: _isJoinDisabled
+                  ? null
+                  : () async {
+                      setState(() => _isJoinDisabled = true); //ボタンを無効
+                      Navigator.pushNamed(
+                        context,
+                        '/join',
+                      );
+                      setState(() => _isJoinDisabled = false); //ボタンを有効
+                    },
               child: const Text(ButtonName.LOTTERY_JOIN),
             ),
           ],
