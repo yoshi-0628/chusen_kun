@@ -1,14 +1,14 @@
 import 'package:chusen_kun/const/object_name.dart';
 import 'package:flutter/material.dart';
 
-class JoinSuccess extends StatefulWidget {
-  const JoinSuccess({Key? key});
+class JoinResult extends StatefulWidget {
+  const JoinResult({Key? key});
 
   @override
-  State<JoinSuccess> createState() => _JoinSuccessState();
+  State<JoinResult> createState() => _JoinResultState();
 }
 
-class _JoinSuccessState extends State<JoinSuccess> {
+class _JoinResultState extends State<JoinResult> {
   @override
   Widget build(BuildContext context) {
 
