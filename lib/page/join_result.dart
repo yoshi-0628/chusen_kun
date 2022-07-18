@@ -9,29 +9,46 @@ class JoinResult extends StatefulWidget {
 }
 
 class _JoinResultState extends State<JoinResult> {
+  bool result = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // TODO: 結果を取得し、画面表示内容を分ける
+    setState(() {
+      this.result = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('抽選参加完了'),
+        title: Text('抽選結果'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              ObjectName.JOIN_SUCCESS,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 40,
-              ),
-            ),
-            SizedBox(
-              child: Image.asset('assets/shingou_machi.png'),
-              width: 300,
-            ),
-            Text(ObjectName.PLS_WAIT),
+            result
+                ? Column(
+                    children: [
+                      SizedBox(
+                        child: Image.asset('assets/pose_win_boy.png'),
+                        width: 300,
+                      ),
+                      Text('おめでとう')
+                    ],
+                  )
+                : Column(
+                    children: [
+                      SizedBox(
+                        child: Image.asset('assets/pose_lose_boy.png'),
+                        width: 300,
+                      ),
+                      Text('残念')
+                    ],
+                  ),
           ],
         ),
       ),
