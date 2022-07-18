@@ -1,3 +1,4 @@
+import 'package:chusen_kun/const/object_name.dart';
 import 'package:flutter/material.dart';
 
 class JoinSuccess extends StatefulWidget {
@@ -14,10 +15,26 @@ class _JoinSuccessState extends State<JoinSuccess> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('参加する'),
+        title: Text('抽選参加完了'),
       ),
-      body: Column(
-        children: <Widget>[Text('参加成功')],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              ObjectName.JOIN_SUCCESS,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
+              ),
+            ),
+            SizedBox(
+              child: Image.asset('assets/shingou_machi.png'),
+              width: 300,
+            ),
+            Text(ObjectName.PLS_WAIT),
+          ],
+        ),
       ),
     );
   }

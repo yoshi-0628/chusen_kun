@@ -26,3 +26,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/party_bingo_taikai_man.png
+    - assets/shingou_machi.png

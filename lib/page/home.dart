@@ -39,26 +39,23 @@ class _Home extends State<Home> {
               onPressed: _isCreateDisabled
                   ? null
                   : () async {
-                setState(() => _isCreateDisabled = true); //ボタンを無効
-                print('抽選を作成する');
-                Lottery newLottery = Lottery(
-                  createdTime: Timestamp.now(),
-                );
-                try {
-                  DocumentReference result =
-                      await LotteryFireStore.addLottery(newLottery);
-                  Navigator.pushNamed(context, '/create', arguments: result.id);
-                } catch (e) {
-                  dialog(context, Message.ERR_OCCURRRNCE,
-                      Message.CREATE_LOTTERY_FAILED);
-                }
-                setState(() => _isCreateDisabled = false); //ボタンを有効
-
-              },
+                      setState(() => _isCreateDisabled = true); //ボタンを無効
+                      Lottery newLottery = Lottery(
+                        createdTime: Timestamp.now(),
+                      );
+                      try {
+                        DocumentReference result =
+                            await LotteryFireStore.addLottery(newLottery);
+                        Navigator.pushNamed(context, '/create',
+                            arguments: result.id);
+                      } catch (e) {
+                        dialog(context, Message.ERR_OCCURRRNCE,
+                            Message.CREATE_LOTTERY_FAILED);
+                      }
+                      setState(() => _isCreateDisabled = false); //ボタンを有効
+                    },
               child: const Text(ButtonName.LOTTERY_CREATE),
             ),
-            // TODO
-            // 2度押し制御
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Colors.orange,
