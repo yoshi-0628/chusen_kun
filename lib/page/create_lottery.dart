@@ -8,6 +8,7 @@ import '../firestore/lottery.dart';
 import '../theme/dialog.dart';
 import '../const/message.dart';
 import '../const/object_name.dart';
+import '../theme/custom_alert_dialog.dart';
 
 class CreateLottery extends StatefulWidget {
   const CreateLottery({Key? key});
@@ -115,7 +116,39 @@ class _CreateLottery extends State<CreateLottery> {
                   size: 200.0,
                 ),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      if (titleController.text.isEmpty ||
+                          winnerController.text.isEmpty) {
+                        dialog(context, '未設定エラー', '抽選タイトルまたは当選人数を設定してください');
+                        print('未設定');
+                      } else {
+                        // todo: 当選人数の方が参加人数より多い場合、注意ダイアログ
+                        int joinNum = await LotteryFireStore.getJoinNum(uid);
+                        print(int.parse(winnerController.text));
+                        int inputWinner = int.parse(winnerController.text);
+                        if (joinNum > inputWinner) {
+                          var dialog = CustomAlertDialog(
+                            title: '注意',
+                            message: '当選人数より参加人数の方が多いですがよろしいですか？（全員当選します）',
+                            onNegativePressed: () {
+                              Navigator.of(context).pop();
+                              print('いいえ');
+                            },
+                            onPostivePressed: () {
+                              // todo: 抽選開始
+                              print('はい');
+                            },
+                          );
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return dialog;
+                              });
+                        } else {
+                          // todo: 抽選開始
+                        }
+                      }
+
                       print(uid);
                     },
                     child: const Text(ButtonName.LOTTERY_START)),

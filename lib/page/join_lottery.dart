@@ -68,7 +68,7 @@ class _JoinLotteryState extends State<JoinLottery> {
       // 読み取ったら止める
       controller.pauseCamera();
       try {
-        await LotteryFireStore.joinLottery(scanData.code!);
+        await LotteryFireStore.joinLottery(scanData.code!,context);
         Navigator.popAndPushNamed(
           context,
           '/joinSuccess',

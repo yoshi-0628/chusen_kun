@@ -1,5 +1,6 @@
 import 'package:chusen_kun/model/join.dart';
 import 'package:chusen_kun/model/lottery.dart';
+import 'package:chusen_kun/theme/dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -58,22 +59,30 @@ class LotteryFireStore {
   }
 
   // 抽選に参加する
-  static Future<void> joinLottery(
-    String uid,
-  ) async {
+  static Future<dynamic> joinLottery(String uid, BuildContext context) async {
     try {
       Firebase.initializeApp();
 
       final messaging = FirebaseMessaging.instance;
       final String? _token = await messaging.getToken();
 
-      // TODO
       // 既に登録されている場合、ダイアログを出す
-      Join newJoin = Join(token: _token!, createdTime: Timestamp.now());
-      await lotteries.doc(uid).collection('join').add({
-        'token': newJoin.token,
-        'createdTime': newJoin.createdTime,
-      });
+      QuerySnapshot join = await lotteries
+          .doc(uid)
+          .collection('join')
+          .where('token', isEqualTo: _token)
+          .get();
+      print('数');
+      print(join.size);
+      if (join.size == 0) {
+        Join newJoin = Join(token: _token!, createdTime: Timestamp.now());
+        await lotteries.doc(uid).collection('join').add({
+          'token': newJoin.token,
+          'createdTime': newJoin.createdTime,
+        });
+      } else {
+        return dialog(context, '既に参加しています。', '重複して参加はできません。');
+      }
     } on FirebaseException catch (e) {
       throw Error();
     }
@@ -84,19 +93,20 @@ class LotteryFireStore {
     String uid,
   ) async {
     try {
-      QuerySnapshot joinNum = await _getJoin(uid);
-      return joinNum.docs.length;
+      CollectionReference<Map<String, dynamic>> joinNum = await _getJoin(uid);
+      QuerySnapshot join = await joinNum.get();
+      return join.docs.length;
     } on FirebaseException catch (e) {
       throw Error();
     }
   }
 
   // joinの中を取得
-  static Future<QuerySnapshot> _getJoin(
+  static Future<CollectionReference<Map<String, dynamic>>> _getJoin(
     String uid,
   ) async {
     try {
-      return await lotteries.doc(uid).collection('join').get();
+      return await lotteries.doc(uid).collection('join');
     } on FirebaseException catch (e) {
       throw Error();
     }

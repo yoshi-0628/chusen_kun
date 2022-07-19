@@ -14,7 +14,7 @@ class _JoinSuccessState extends State<JoinSuccess> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('参加完了'),
+        title: Text('抽選待機中'),
       ),
       body: Center(
         child: Column(
