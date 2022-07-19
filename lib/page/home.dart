@@ -16,7 +16,6 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  String argument = '';
   bool _isJoinDisabled = false;
   bool _isCreateDisabled = false;
 

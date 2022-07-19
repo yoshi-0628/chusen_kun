@@ -19,7 +19,7 @@ class LotteryFireStore {
       print('成功 : $result');
       return result;
     } on FirebaseException catch (e) {
-      throw new Error();
+      throw Error();
     }
   }
 
@@ -62,7 +62,6 @@ class LotteryFireStore {
     String uid,
   ) async {
     try {
-      print('抽選に参加する');
       Firebase.initializeApp();
 
       final messaging = FirebaseMessaging.instance;
@@ -70,13 +69,36 @@ class LotteryFireStore {
 
       // TODO
       // 既に登録されている場合、ダイアログを出す
-      Join newJoin = new Join(token: _token!, createdTime: Timestamp.now());
+      Join newJoin = Join(token: _token!, createdTime: Timestamp.now());
       await lotteries.doc(uid).collection('join').add({
         'token': newJoin.token,
         'createdTime': newJoin.createdTime,
       });
     } on FirebaseException catch (e) {
-      throw new Error();
+      throw Error();
+    }
+  }
+
+  // 参加者の人数を取得する
+  static Future<int> getJoinNum(
+    String uid,
+  ) async {
+    try {
+      QuerySnapshot joinNum = await _getJoin(uid);
+      return joinNum.docs.length;
+    } on FirebaseException catch (e) {
+      throw Error();
+    }
+  }
+
+  // joinの中を取得
+  static Future<QuerySnapshot> _getJoin(
+    String uid,
+  ) async {
+    try {
+      return await lotteries.doc(uid).collection('join').get();
+    } on FirebaseException catch (e) {
+      throw Error();
     }
   }
 }

@@ -3,7 +3,7 @@ class ObjectName {
 
   static const String WINNERS_NUM = '当選人数';
 
-  static const String JOIN_SUCCESS = '当選完了';
+  static const String JOIN_SUCCESS = '参加完了';
 
   static const String PLS_WAIT = 'しばらくお待ちください';
 

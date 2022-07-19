@@ -14,13 +14,13 @@ class _JoinSuccessState extends State<JoinSuccess> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('抽選参加完了'),
+        title: Text('参加完了'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               ObjectName.JOIN_SUCCESS,
               style: TextStyle(
                 fontWeight: FontWeight.bold,

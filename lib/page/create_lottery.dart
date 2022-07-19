@@ -19,11 +19,11 @@ class CreateLottery extends StatefulWidget {
 class _CreateLottery extends State<CreateLottery> {
   final titleController = TextEditingController();
   final winnerController = TextEditingController();
+  int _joinNum = 0;
 
   @override
   Widget build(BuildContext context) {
     String uid = ModalRoute.of(context)?.settings.arguments as String;
-    int join_num = 0;
     @override
     void dispose() {
       titleController.dispose();
@@ -32,10 +32,11 @@ class _CreateLottery extends State<CreateLottery> {
     }
 
     _editLottery() async {
-      if (!IntUtil.isNumeric(winnerController.text) && winnerController.text != '') {
+      if (!IntUtil.isNumeric(winnerController.text) &&
+          winnerController.text != '') {
         return dialog(context, Message.ERR_OCCURRRNCE, Message.NOT_NUM_WINNER);
       }
-      Lottery editLottery = new Lottery(
+      Lottery editLottery = Lottery(
         title: titleController.text,
         winnersNum: winnerController.text,
       );
@@ -103,10 +104,11 @@ class _CreateLottery extends State<CreateLottery> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () {
-                      print('refresh');
+                    onPressed: () async {
+                      _joinNum = await LotteryFireStore.getJoinNum(uid);
+                      setState(() {});
                     },
-                    icon: Icon(Icons.refresh)),
+                    icon: const Icon(Icons.refresh)),
                 QrImage(
                   data: uid,
                   version: QrVersions.auto,
@@ -117,7 +119,7 @@ class _CreateLottery extends State<CreateLottery> {
                       print(uid);
                     },
                     child: const Text(ButtonName.LOTTERY_START)),
-                Text('参加人数 $join_num'),
+                Text('参加人数 $_joinNum'),
               ],
             ),
           ),
