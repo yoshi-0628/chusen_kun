@@ -49,6 +49,14 @@ class _CreateLottery extends State<CreateLottery> {
       ));
     }
 
+    _startLottery(int winNum, int joinNum) async {
+      await LotteryFireStore.startLottery(uid, winNum, joinNum);
+      Navigator.popAndPushNamed(
+        context,
+        '/endLottery',
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(uid),
@@ -59,7 +67,6 @@ class _CreateLottery extends State<CreateLottery> {
             // フォーカスが当たっているときフォーカスを外す
             final FocusScopeNode currentScope = FocusScope.of(context);
             if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
-              print(currentScope.focusedChild);
               currentScope.unfocus();
               await _editLottery();
             }
@@ -119,24 +126,21 @@ class _CreateLottery extends State<CreateLottery> {
                     onPressed: () async {
                       if (titleController.text.isEmpty ||
                           winnerController.text.isEmpty) {
+                        // 入力が無い場合エラー
                         dialog(context, '未設定エラー', '抽選タイトルまたは当選人数を設定してください');
-                        print('未設定');
                       } else {
-                        // todo: 当選人数の方が参加人数より多い場合、注意ダイアログ
                         int joinNum = await LotteryFireStore.getJoinNum(uid);
-                        print(int.parse(winnerController.text));
                         int inputWinner = int.parse(winnerController.text);
-                        if (joinNum > inputWinner) {
+                        if (joinNum <= inputWinner) {
                           var dialog = CustomAlertDialog(
                             title: '注意',
                             message: '当選人数より参加人数の方が多いですがよろしいですか？（全員当選します）',
                             onNegativePressed: () {
                               Navigator.of(context).pop();
-                              print('いいえ');
                             },
                             onPostivePressed: () {
-                              // todo: 抽選開始
-                              print('はい');
+                              _startLottery(inputWinner, joinNum);
+                              Navigator.of(context).pop();
                             },
                           );
                           showDialog(
@@ -145,11 +149,9 @@ class _CreateLottery extends State<CreateLottery> {
                                 return dialog;
                               });
                         } else {
-                          // todo: 抽選開始
+                          _startLottery(inputWinner, joinNum);
                         }
                       }
-
-                      print(uid);
                     },
                     child: const Text(ButtonName.LOTTERY_START)),
                 Text('参加人数 $_joinNum'),

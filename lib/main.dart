@@ -1,3 +1,4 @@
+import 'package:chusen_kun/page/end_lottery.dart';
 import 'package:chusen_kun/page/join_result.dart';
 import 'package:chusen_kun/page/join_success.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/join': (context) => JoinLottery(),
         '/joinSuccess': (context) => JoinSuccess(),
         '/joinResult': (context) => JoinResult(),
+        '/endLottery': (context) => EndLottery(),
       },
     );
   }

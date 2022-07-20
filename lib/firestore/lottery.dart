@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:chusen_kun/model/join.dart';
 import 'package:chusen_kun/model/lottery.dart';
 import 'package:chusen_kun/theme/dialog.dart';
@@ -43,7 +47,6 @@ class LotteryFireStore {
   // タイトルと当選人数を変更する
   static Future<dynamic> editLottery(String uid, Lottery editLottery) async {
     try {
-      print('更新スタート');
       Firebase.initializeApp();
       var result = await lotteries.doc(uid).update({
         // タイトル
@@ -72,8 +75,6 @@ class LotteryFireStore {
           .collection('join')
           .where('token', isEqualTo: _token)
           .get();
-      print('数');
-      print(join.size);
       if (join.size == 0) {
         Join newJoin = Join(token: _token!, createdTime: Timestamp.now());
         await lotteries.doc(uid).collection('join').add({
@@ -106,7 +107,45 @@ class LotteryFireStore {
     String uid,
   ) async {
     try {
-      return await lotteries.doc(uid).collection('join');
+      return lotteries.doc(uid).collection('join');
+    } on FirebaseException catch (e) {
+      throw Error();
+    }
+  }
+
+  // 抽選スタート
+  static Future<void> startLottery(String uid, int winNum, int joinNum) async {
+    try {
+      CollectionReference<Map<String, dynamic>> join = await _getJoin(uid);
+      QuerySnapshot q = await join.get();
+
+      // 確率計算
+      // 当選人数分のランダム配列を作る
+      // 全員当選の場合は以降ロジックを実行しない
+      if (joinNum <= winNum) {
+        for (QueryDocumentSnapshot doc in q.docs) {
+          join.doc(doc.id).update({
+            'winner_flg': '1'
+          });
+        }
+      } else {
+        var random = Random();
+        List<int> list = [];
+        for (var i = 0; i < winNum; i++) {
+          int win = random.nextInt(joinNum);
+          if (list.contains(win)) {
+            // かぶったらやりなおし
+            i--;
+            continue;
+          }
+          list.add(win);
+        }
+        for (var win in list) {
+          join.doc(q.docs[win].id).update({'winner_flg': '1'});
+        }
+      }
+      // Lottery更新
+      await lotteries.doc(uid).update({'end_flg': '1'});
     } on FirebaseException catch (e) {
       throw Error();
     }
