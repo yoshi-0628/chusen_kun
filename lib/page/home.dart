@@ -82,6 +82,22 @@ class _Home extends State<Home> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            activeIcon: Icon(Icons.home_outlined),
+            label: 'ホーム',
+            backgroundColor: Colors.black,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notes),
+            activeIcon: Icon(Icons.notes_outlined),
+            label: '履歴',
+            backgroundColor: Colors.green,
+          ),
+        ],
+      ),
     );
   }
 }
