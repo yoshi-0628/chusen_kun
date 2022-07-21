@@ -16,6 +16,7 @@ dependencies:
   qr_code_scanner: ^1.0.0
   cloud_firestore: ^3.2.1
   firebase_messaging: ^12.0.0
+  flutter_native_splash: ^2.2.5
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +31,14 @@ flutter:
     - assets/pose_lose_boy.png
     - assets/pose_win_boy.png
     - assets/text_kansya.png
+flutter_native_splash:
+  color: '#add8e6'
+  image: 'assets/splash.png'
+  color_dark: '#262626'
+  image_dark: 'assets/splash.png'
+  fullscreen: true
+  android_12:
+    icon_background_color: '#add8e6'
+    image: 'assets/splash.png'
+    icon_background_color_dark: '#262626'
+    image_dark: 'assets/splash.png'

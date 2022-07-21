@@ -19,6 +19,13 @@ class _Home extends State<Home> {
   bool _isJoinDisabled = false;
   bool _isCreateDisabled = false;
 
+  //ここが重要
+  @override
+  void initState() async {
+    super.initState();
+    await LotteryFireStore.initFireBase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

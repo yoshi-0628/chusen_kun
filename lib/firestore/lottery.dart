@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:chusen_kun/model/join.dart';
@@ -15,13 +13,14 @@ class LotteryFireStore {
   static final CollectionReference lotteries =
       _firestoreInstance.collection('lottery');
 
+  static Future<void> initFireBase() async{
+    await Firebase.initializeApp();
+  }
+
   static Future<dynamic> addLottery(Lottery newLottery) async {
     try {
-      print('作成スタート');
-      await Firebase.initializeApp();
       DocumentReference result =
           await lotteries.add({'createdTime': newLottery.createdTime});
-      print('成功 : $result');
       return result;
     } on FirebaseException catch (e) {
       throw Error();
@@ -39,7 +38,6 @@ class LotteryFireStore {
       );
       return true;
     } on FirebaseException catch (e) {
-      print('取得エラー：$e');
       return false;
     }
   }
@@ -47,7 +45,6 @@ class LotteryFireStore {
   // タイトルと当選人数を変更する
   static Future<dynamic> editLottery(String uid, Lottery editLottery) async {
     try {
-      Firebase.initializeApp();
       var result = await lotteries.doc(uid).update({
         // タイトル
         'title': editLottery.title,
@@ -56,7 +53,6 @@ class LotteryFireStore {
       });
       return result;
     } on FirebaseException catch (e) {
-      print('更新エラー：$e');
       return false;
     }
   }
@@ -64,8 +60,6 @@ class LotteryFireStore {
   // 抽選に参加する
   static Future<dynamic> joinLottery(String uid, BuildContext context) async {
     try {
-      Firebase.initializeApp();
-
       final messaging = FirebaseMessaging.instance;
       final String? _token = await messaging.getToken();
 
