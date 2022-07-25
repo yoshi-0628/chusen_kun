@@ -6,6 +6,7 @@ import '../const/message.dart';
 import '../firestore/lottery.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import '../firestore/token.dart';
 import '../theme/dialog.dart';
 
 class JoinLottery extends StatefulWidget {
@@ -69,6 +70,7 @@ class _JoinLotteryState extends State<JoinLottery> {
       controller.pauseCamera();
       try {
         await LotteryFireStore.joinLottery(scanData.code!,context);
+        await TokenFireStore.editHistory(scanData.code!);
         Navigator.popAndPushNamed(
           context,
           '/joinSuccess',
