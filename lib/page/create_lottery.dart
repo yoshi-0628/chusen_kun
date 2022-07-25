@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../firestore/lottery.dart';
+import '../firestore/token.dart';
 import '../theme/dialog.dart';
 import '../const/message.dart';
 import '../const/object_name.dart';
@@ -35,6 +36,8 @@ class _CreateLottery extends State<CreateLottery> {
       setState(() {
         uid = result.id;
       });
+      await TokenFireStore.editHistory(result.id);
+
     });
   }
 
