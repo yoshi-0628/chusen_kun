@@ -1,6 +1,7 @@
 import 'package:chusen_kun/const/button_name.dart';
 import 'package:chusen_kun/model/lottery.dart';
 import 'package:chusen_kun/util/int_util.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -21,10 +22,24 @@ class _CreateLottery extends State<CreateLottery> {
   final titleController = TextEditingController();
   final winnerController = TextEditingController();
   int _joinNum = 0;
+  String uid = '';
+
+  @override
+  void initState() {
+    super.initState();
+    Lottery newLottery = Lottery(
+      createdTime: Timestamp.now(),
+    );
+    Future(() async {
+      DocumentReference result = await LotteryFireStore.addLottery(newLottery);
+      setState(() {
+        uid = result.id;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    String uid = ModalRoute.of(context)?.settings.arguments as String;
     @override
     void dispose() {
       titleController.dispose();

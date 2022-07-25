@@ -17,7 +17,6 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-
   int _currentIndex = 0;
   final _pageWidgets = [
     const HomeWidget(),
@@ -31,7 +30,9 @@ class _Home extends State<Home> {
       await LotteryFireStore.initFireBase();
     });
   }
-  void _onItemTapped(int index) => setState(() => _currentIndex = index );
+
+  void _onItemTapped(int index) => setState(() => _currentIndex = index);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +62,6 @@ class _Home extends State<Home> {
   }
 }
 
-
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
 
@@ -87,22 +87,11 @@ class _HomeWidget extends State<HomeWidget> {
             style: ElevatedButton.styleFrom(primary: Colors.grey),
             onPressed: _isCreateDisabled
                 ? null
-                : () async {
-              setState(() => _isCreateDisabled = true); //ボタンを無効
-              Lottery newLottery = Lottery(
-                createdTime: Timestamp.now(),
-              );
-              try {
-                DocumentReference result =
-                await LotteryFireStore.addLottery(newLottery);
-                Navigator.pushNamed(context, '/create',
-                    arguments: result.id);
-              } catch (e) {
-                dialog(context, Message.ERR_OCCURRRNCE,
-                    Message.CREATE_LOTTERY_FAILED);
-              }
-              setState(() => _isCreateDisabled = false); //ボタンを有効
-            },
+                : () {
+                    setState(() => _isCreateDisabled = true); //ボタンを無効
+                    Navigator.pushNamed(context, '/create');
+                    setState(() => _isCreateDisabled = false); //ボタンを有効
+                  },
             child: const Text(ButtonName.LOTTERY_CREATE),
           ),
           ElevatedButton(
@@ -111,14 +100,11 @@ class _HomeWidget extends State<HomeWidget> {
             ),
             onPressed: _isJoinDisabled
                 ? null
-                : () async {
-              setState(() => _isJoinDisabled = true); //ボタンを無効
-              Navigator.pushNamed(
-                context,
-                '/join',
-              );
-              setState(() => _isJoinDisabled = false); //ボタンを有効
-            },
+                : () {
+                    setState(() => _isJoinDisabled = true); //ボタンを無効
+                    Navigator.pushNamed(context, '/join');
+                    setState(() => _isJoinDisabled = false); //ボタンを有効
+                  },
             child: const Text(ButtonName.LOTTERY_JOIN),
           ),
         ],
