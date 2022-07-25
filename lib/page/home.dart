@@ -20,8 +20,8 @@ class _Home extends State<Home> {
 
   int _currentIndex = 0;
   final _pageWidgets = [
-    HomeWidget(),
-    History(),
+    const HomeWidget(),
+    const History(),
   ];
 
   @override
@@ -55,6 +55,7 @@ class _Home extends State<Home> {
           ),
         ],
         onTap: _onItemTapped,
+        currentIndex: _currentIndex,
       ),
     );
   }
