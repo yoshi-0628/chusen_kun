@@ -12,15 +12,22 @@ class LotteryFireStore {
   static final _firestoreInstance = FirebaseFirestore.instance;
   static final CollectionReference lotteries =
       _firestoreInstance.collection('lottery');
+  static final messaging = FirebaseMessaging.instance;
 
-  static Future<void> initFireBase() async{
+  static Future<void> initFireBase() async {
     await Firebase.initializeApp();
   }
 
   static Future<dynamic> addLottery(Lottery newLottery) async {
     try {
-      DocumentReference result =
-          await lotteries.add({'createdTime': newLottery.createdTime});
+      final String? _token = await messaging.getToken();
+      DocumentReference result = await lotteries.add({
+        'title': newLottery.title,
+        'winner_flg': newLottery.winnersNum,
+        'end_flg': newLottery.endFlg,
+        'creater_uid': _token,
+        'createdTime': newLottery.createdTime
+      });
       return result;
     } on FirebaseException catch (e) {
       throw Error();
@@ -28,17 +35,16 @@ class LotteryFireStore {
   }
 
   // 抽選を取得する
-  static Future<dynamic> getLottery(String uid) async {
+  static Future<List<DocumentSnapshot>> getLottery(List<dynamic> uids) async {
     try {
-      DocumentSnapshot documentSnapshot = await lotteries.doc(uid).get();
-      Map<String, dynamic> data =
-          documentSnapshot.data() as Map<String, dynamic>;
-      Lottery myLottery = Lottery(
-        createdTime: data['createdTime'],
-      );
-      return true;
+      List<DocumentSnapshot> list = <DocumentSnapshot>[];
+      for (String uid in uids) {
+        DocumentSnapshot snap = await lotteries.doc(uid).get();
+        list.add(snap);
+      }
+      return list;
     } on FirebaseException catch (e) {
-      return false;
+      throw Error();
     }
   }
 
@@ -60,7 +66,6 @@ class LotteryFireStore {
   // 抽選に参加する
   static Future<dynamic> joinLottery(String uid, BuildContext context) async {
     try {
-      final messaging = FirebaseMessaging.instance;
       final String? _token = await messaging.getToken();
 
       // 既に登録されている場合、ダイアログを出す
@@ -118,9 +123,7 @@ class LotteryFireStore {
       // 全員当選の場合は以降ロジックを実行しない
       if (joinNum <= winNum) {
         for (QueryDocumentSnapshot doc in q.docs) {
-          join.doc(doc.id).update({
-            'winner_flg': '1'
-          });
+          join.doc(doc.id).update({'winner_flg': '1'});
         }
       } else {
         var random = Random();

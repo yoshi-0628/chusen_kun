@@ -18,10 +18,8 @@ class TokenFireStore {
   static Future<dynamic> getHistory() async {
     try {
       final String? _token = await messaging.getToken();
-
-      DocumentReference doc = tokens.doc(_token);
-      DocumentSnapshot snap = await doc.get();
-      return snap.get('uids');
+      QuerySnapshot ref = await tokens.where('token', isEqualTo: _token).get();
+      return ref.docs.first.get('uids');
     } on FirebaseException catch (e) {
       throw Error();
     }

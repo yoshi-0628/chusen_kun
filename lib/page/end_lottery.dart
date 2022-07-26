@@ -13,7 +13,7 @@ class _EndLottery extends State<EndLottery> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('抽選完了'),
+        title: const Text('抽選終了'),
       ),
       body: Center(
         child: Column(
