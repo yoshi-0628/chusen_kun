@@ -1,3 +1,4 @@
+import 'package:chusen_kun/page/edit_lottery.dart';
 import 'package:chusen_kun/page/end_lottery.dart';
 import 'package:chusen_kun/page/join_result.dart';
 import 'package:chusen_kun/page/join_success.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Home(title: '抽選くん'),
         '/create': (context) => CreateLottery(),
+        '/edit': (context) => EditLottery(),
         '/join': (context) => JoinLottery(),
         '/joinSuccess': (context) => JoinSuccess(),
         '/joinResult': (context) => JoinResult(),

@@ -14,6 +14,7 @@ class History extends StatefulWidget {
 class _History extends State<History> {
   final List<String> items = List<String>.generate(3, (i) => 'Item $i');
   List<DocumentSnapshot> historyList = <DocumentSnapshot>[];
+  String token = '';
 
   String getTitle(DocumentSnapshot snap) {
     try {
@@ -23,14 +24,24 @@ class _History extends State<History> {
     }
   }
 
+  bool isCreater(DocumentSnapshot snap) {
+    try {
+      return snap.get('creater_uid') == token;
+    } catch (e) {
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     Future(() async {
       var uids = await TokenFireStore.getHistory();
       List<DocumentSnapshot> tmp = await LotteryFireStore.getLottery(uids);
+      String? _token = await TokenFireStore.messaging.getToken();
       setState(() {
         historyList = tmp;
+        token = _token!;
       });
     });
   }
@@ -46,11 +57,19 @@ class _History extends State<History> {
             index,
           ) {
             return ListTile(
-              leading: Icon(Icons.edit),
+              leading: isCreater(historyList[index]) ? Icon(Icons.edit) : null,
               trailing: Text('結果を見る'),
               title: Text(getTitle(historyList[index])),
               onTap: () {
-                Navigator.pushNamed(context, '/joinResult');
+                if (isCreater(historyList[index])) {
+                  Navigator.pushNamed(context, '/edit', arguments: {
+                    'uid': historyList[index].id,
+                    'title': historyList[index].get('title'),
+                    'winner': historyList[index].get('winners_num'),
+                  });
+                } else {
+                  Navigator.pushNamed(context, '/joinResult');
+                }
               },
             );
           },

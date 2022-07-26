@@ -23,7 +23,7 @@ class LotteryFireStore {
       final String? _token = await messaging.getToken();
       DocumentReference result = await lotteries.add({
         'title': newLottery.title,
-        'winner_flg': newLottery.winnersNum,
+        'winners_num': newLottery.winnersNum,
         'end_flg': newLottery.endFlg,
         'creater_uid': _token,
         'createdTime': newLottery.createdTime
@@ -40,7 +40,9 @@ class LotteryFireStore {
       List<DocumentSnapshot> list = <DocumentSnapshot>[];
       for (String uid in uids) {
         DocumentSnapshot snap = await lotteries.doc(uid).get();
-        list.add(snap);
+        if(snap.exists){
+          list.add(snap);
+        }
       }
       return list;
     } on FirebaseException catch (e) {

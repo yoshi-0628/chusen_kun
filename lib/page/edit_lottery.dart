@@ -12,83 +12,74 @@ import '../const/message.dart';
 import '../const/object_name.dart';
 import '../theme/custom_alert_dialog.dart';
 
-class CreateLottery extends StatefulWidget {
-  const CreateLottery({this.exiUid, Key? key});
+class EditLottery extends StatefulWidget {
+  const EditLottery({this.exiUid, Key? key});
 
   final String? exiUid;
 
   @override
-  State<CreateLottery> createState() => _CreateLottery();
+  State<EditLottery> createState() => _EditLottery();
 }
 
-class _CreateLottery extends State<CreateLottery> {
+class _EditLottery extends State<EditLottery> {
   final titleController = TextEditingController();
   final winnerController = TextEditingController();
   int _joinNum = 0;
-  String uid = '';
+  String _uid = '';
 
   @override
   void initState() {
     super.initState();
-    Lottery newLottery = Lottery(
-      createdTime: Timestamp.now(),
+    Future(() async {});
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    winnerController.dispose();
+    super.dispose();
+  }
+
+  _editLottery(String uid) async {
+    if (!IntUtil.isNumeric(winnerController.text) &&
+        winnerController.text != '') {
+      return dialog(context, Message.ERR_OCCURRRNCE, Message.NOT_NUM_WINNER);
+    }
+    Lottery editLottery = Lottery(
+      title: titleController.text,
+      winnersNum: winnerController.text,
     );
-    Future(() async {
-      String? tmpUid = widget.exiUid;
-      print('tmpUid　：　$tmpUid');
-      if (tmpUid == null) {
-        DocumentReference result =
-            await LotteryFireStore.addLottery(newLottery);
-        await TokenFireStore.editHistory(result.id);
-        setState(() {
-          uid = result.id;
-        });
-      } else {
-        print('エルス');
-        setState(() {
-          uid = tmpUid;
-        });
-      }
-    });
+    await LotteryFireStore.editLottery(uid, editLottery);
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text(Message.EDIT_SUCCESS),
+      duration: const Duration(seconds: 5),
+    ));
+  }
+
+  _startLottery(int winNum, int joinNum, String uid) async {
+    await LotteryFireStore.startLottery(uid, winNum, joinNum);
+    Navigator.popAndPushNamed(
+      context,
+      '/endLottery',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    @override
-    void dispose() {
-      titleController.dispose();
-      winnerController.dispose();
-      super.dispose();
-    }
+    Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
 
-    _editLottery() async {
-      if (!IntUtil.isNumeric(winnerController.text) &&
-          winnerController.text != '') {
-        return dialog(context, Message.ERR_OCCURRRNCE, Message.NOT_NUM_WINNER);
-      }
-      Lottery editLottery = Lottery(
-        title: titleController.text,
-        winnersNum: winnerController.text,
-      );
-      await LotteryFireStore.editLottery(uid, editLottery);
-
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text(Message.EDIT_SUCCESS),
-        duration: const Duration(seconds: 5),
-      ));
-    }
-
-    _startLottery(int winNum, int joinNum) async {
-      await LotteryFireStore.startLottery(uid, winNum, joinNum);
-      Navigator.popAndPushNamed(
-        context,
-        '/endLottery',
-      );
-    }
-
+    setState(() {
+      _uid = arguments['uid'];
+      winnerController.text = arguments['winner'];
+      titleController.text = arguments['title'];
+      Future(() async {
+        _joinNum = await LotteryFireStore.getJoinNum(arguments['uid']);
+      });
+    });
     return Scaffold(
       appBar: AppBar(
-        title: Text(uid),
+        title: Text(_uid),
       ),
       body: SingleChildScrollView(
         child: GestureDetector(
@@ -97,7 +88,7 @@ class _CreateLottery extends State<CreateLottery> {
             final FocusScopeNode currentScope = FocusScope.of(context);
             if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
               currentScope.unfocus();
-              await _editLottery();
+              await _editLottery(_uid);
             }
           },
           child: Center(
@@ -115,7 +106,7 @@ class _CreateLottery extends State<CreateLottery> {
                       labelText: ObjectName.LOTTERY_TITLE,
                     ),
                     onFieldSubmitted: (String value) async {
-                      await _editLottery();
+                      await _editLottery(_uid);
                     },
                   ),
                 ),
@@ -142,12 +133,12 @@ class _CreateLottery extends State<CreateLottery> {
                 ),
                 IconButton(
                     onPressed: () async {
-                      _joinNum = await LotteryFireStore.getJoinNum(uid);
+                      _joinNum = await LotteryFireStore.getJoinNum(_uid);
                       setState(() {});
                     },
                     icon: const Icon(Icons.refresh)),
                 QrImage(
-                  data: uid,
+                  data: _uid,
                   version: QrVersions.auto,
                   size: 200.0,
                 ),
@@ -158,7 +149,7 @@ class _CreateLottery extends State<CreateLottery> {
                         // 入力が無い場合エラー
                         dialog(context, '未設定エラー', '抽選タイトルまたは当選人数を設定してください');
                       } else {
-                        int joinNum = await LotteryFireStore.getJoinNum(uid);
+                        int joinNum = await LotteryFireStore.getJoinNum(_uid);
                         int inputWinner = int.parse(winnerController.text);
                         if (joinNum <= inputWinner) {
                           var dialog = CustomAlertDialog(
@@ -168,7 +159,7 @@ class _CreateLottery extends State<CreateLottery> {
                               Navigator.of(context).pop();
                             },
                             onPostivePressed: () {
-                              _startLottery(inputWinner, joinNum);
+                              _startLottery(inputWinner, joinNum, _uid);
                               Navigator.of(context).pop();
                             },
                           );
@@ -178,7 +169,7 @@ class _CreateLottery extends State<CreateLottery> {
                                 return dialog;
                               });
                         } else {
-                          _startLottery(inputWinner, joinNum);
+                          _startLottery(inputWinner, joinNum, _uid);
                         }
                       }
                     },
