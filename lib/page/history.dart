@@ -57,16 +57,20 @@ class _History extends State<History> {
             index,
           ) {
             return ListTile(
-              leading: isCreater(historyList[index]) ? Icon(Icons.edit) : null,
-              trailing: Text('結果を見る'),
+              leading: isCreater(historyList[index]) ? Icon(Icons.edit) : Text(''),
+              trailing: isCreater(historyList[index]) ? Text('') : Text('結果を見る'),
               title: Text(getTitle(historyList[index])),
               onTap: () {
                 if (isCreater(historyList[index])) {
-                  Navigator.pushNamed(context, '/edit', arguments: {
-                    'uid': historyList[index].id,
-                    'title': historyList[index].get('title'),
-                    'winner': historyList[index].get('winners_num'),
-                  });
+                  if(historyList[index].get('end_flg') == '1') {
+                    Navigator.pushNamed(context, '/endLottery');
+                  } else {
+                    Navigator.pushNamed(context, '/edit', arguments: {
+                      'uid': historyList[index].id,
+                      'title': historyList[index].get('title'),
+                      'winner': historyList[index].get('winners_num'),
+                    });
+                  }
                 } else {
                   Navigator.pushNamed(context, '/joinResult');
                 }

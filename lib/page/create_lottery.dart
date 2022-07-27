@@ -35,7 +35,6 @@ class _CreateLottery extends State<CreateLottery> {
     );
     Future(() async {
       String? tmpUid = widget.exiUid;
-      print('tmpUid　：　$tmpUid');
       if (tmpUid == null) {
         DocumentReference result =
             await LotteryFireStore.addLottery(newLottery);
