@@ -1,4 +1,5 @@
 import 'package:chusen_kun/const/object_name.dart';
+import 'package:chusen_kun/firestore/lottery.dart';
 import 'package:flutter/material.dart';
 
 class JoinResult extends StatefulWidget {
@@ -9,19 +10,21 @@ class JoinResult extends StatefulWidget {
 }
 
 class _JoinResultState extends State<JoinResult> {
-  bool result = true;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // TODO: 結果を取得し、画面表示内容を分ける
-    setState(() {
-      this.result = false;
-    });
-  }
+  bool _result = false;
+  String _uid = '';
 
   @override
   Widget build(BuildContext context) {
+    Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    setState(() {
+      _uid = arguments['uid'];
+    });
+    Future(() async {
+      bool isWinner = await LotteryFireStore.isWinner(arguments['uid']);
+      setState(() {
+        _result = isWinner;
+      });
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('抽選結果'),
@@ -30,7 +33,7 @@ class _JoinResultState extends State<JoinResult> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            result
+            _result
                 ? Column(
                     children: [
                       SizedBox(

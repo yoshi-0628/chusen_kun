@@ -28,6 +28,12 @@ class _CreateLottery extends State<CreateLottery> {
   String uid = '';
 
   @override
+  void dispose() {
+    titleController.dispose();
+    winnerController.dispose();
+    super.dispose();
+  }
+  @override
   void initState() {
     super.initState();
     Lottery newLottery = Lottery(
@@ -51,14 +57,10 @@ class _CreateLottery extends State<CreateLottery> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    @override
-    void dispose() {
-      titleController.dispose();
-      winnerController.dispose();
-      super.dispose();
-    }
+
 
     _editLottery() async {
       if (!IntUtil.isNumeric(winnerController.text) &&

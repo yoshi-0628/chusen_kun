@@ -28,6 +28,13 @@ class _EditLottery extends State<EditLottery> {
   String _uid = '';
 
   @override
+  void dispose() {
+    titleController.dispose();
+    winnerController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     Future(() async {
@@ -38,12 +45,6 @@ class _EditLottery extends State<EditLottery> {
     });
   }
 
-  @override
-  void dispose() {
-    titleController.dispose();
-    winnerController.dispose();
-    super.dispose();
-  }
 
   _editLottery(String uid) async {
     if (!IntUtil.isNumeric(winnerController.text) &&

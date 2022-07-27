@@ -57,12 +57,15 @@ class _History extends State<History> {
             index,
           ) {
             return ListTile(
-              leading: isCreater(historyList[index]) ? Icon(Icons.edit) : Text(''),
-              trailing: isCreater(historyList[index]) ? Text('') : Text('結果を見る'),
+              leading:
+                  isCreater(historyList[index]) ? Icon(Icons.edit) : Text(''),
+              trailing:
+                  isCreater(historyList[index]) ? Text('') : Text('結果を見る'),
               title: Text(getTitle(historyList[index])),
               onTap: () {
+                // 作成した側
                 if (isCreater(historyList[index])) {
-                  if(historyList[index].get('end_flg') == '1') {
+                  if (historyList[index].get('end_flg') == '1') {
                     Navigator.pushNamed(context, '/endLottery');
                   } else {
                     Navigator.pushNamed(context, '/edit', arguments: {
@@ -72,7 +75,16 @@ class _History extends State<History> {
                     });
                   }
                 } else {
-                  Navigator.pushNamed(context, '/joinResult');
+                  // 参加した側
+                  if (historyList[index].get('end_flg') == '1') {
+                    // 終わったら当選確認をする
+                    Navigator.pushNamed(context, '/joinResult', arguments: {
+                      'uid': historyList[index].id,
+                    });
+                  } else {
+                    // 終わっていなければ待機中
+                    Navigator.pushNamed(context, '/joinSuccess');
+                  }
                 }
               },
             );

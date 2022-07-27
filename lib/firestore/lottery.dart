@@ -40,7 +40,7 @@ class LotteryFireStore {
       List<DocumentSnapshot> list = <DocumentSnapshot>[];
       for (String uid in uids) {
         DocumentSnapshot snap = await lotteries.doc(uid).get();
-        if(snap.exists){
+        if (snap.exists) {
           list.add(snap);
         }
       }
@@ -80,6 +80,7 @@ class LotteryFireStore {
         Join newJoin = Join(token: _token!, createdTime: Timestamp.now());
         await lotteries.doc(uid).collection('join').add({
           'token': newJoin.token,
+          'winner_flg' : newJoin.winnerFlg,
           'createdTime': newJoin.createdTime,
         });
       } else {
@@ -147,6 +148,18 @@ class LotteryFireStore {
       await lotteries.doc(uid).update({'end_flg': '1'});
     } on FirebaseException catch (e) {
       throw Error();
+    }
+  }
+
+  // 当選しているか確かめる
+  static Future<bool> isWinner(String uid) async {
+    CollectionReference join = await _getJoin(uid);
+    final String? _token = await messaging.getToken();
+    QuerySnapshot snapTmp = await join.where('token', isEqualTo: _token).get();
+    if(snapTmp.size > 0 && snapTmp.docs.first.get('winner_flg') == '1') {
+      return true;
+    } else {
+      return false;
     }
   }
 }
