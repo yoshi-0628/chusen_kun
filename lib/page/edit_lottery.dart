@@ -30,7 +30,12 @@ class _EditLottery extends State<EditLottery> {
   @override
   void initState() {
     super.initState();
-    Future(() async {});
+    Future(() async {
+      int tmp = await LotteryFireStore.getJoinNum(_uid);
+      setState(() {
+        _joinNum = tmp;
+      });
+    });
   }
 
   @override
@@ -57,7 +62,7 @@ class _EditLottery extends State<EditLottery> {
     ));
   }
 
-  _startLottery(int winNum, int joinNum, String uid) async {
+  void _startLottery(int winNum, int joinNum, String uid) async {
     await LotteryFireStore.startLottery(uid, winNum, joinNum);
     Navigator.popAndPushNamed(
       context,
