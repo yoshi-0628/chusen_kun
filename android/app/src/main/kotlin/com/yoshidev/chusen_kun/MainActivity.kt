@@ -1,4 +1,4 @@
-package com.example.chusen_kun
+package com.yoshidev.chusen_kun
 
 import io.flutter.embedding.android.FlutterActivity
 

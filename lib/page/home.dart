@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:chusen_kun/page/history.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../firestore/lottery.dart';
 import '../model/lottery.dart';
 import '../theme/dialog.dart';
@@ -28,7 +31,12 @@ class _Home extends State<Home> {
     super.initState();
     Future(() async {
       await LotteryFireStore.initFireBase();
+      var status = await Permission.photos.request();
+      if (status.isDenied) {
+        exit(0);
+      }
     });
+
   }
 
   void _onItemTapped(int index) => setState(() => _currentIndex = index);

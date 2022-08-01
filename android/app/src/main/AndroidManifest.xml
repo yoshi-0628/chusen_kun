@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chusen_kun">
+    package="com.yoshidev.chusen_kun">
    <application
-        android:label="chusen_kun"
+        android:label="抽選君"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
